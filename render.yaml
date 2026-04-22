@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: fono-app-backend
+    env: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install && npm run prisma:generate && npm run build && npm run prisma:migrate:deploy
+    startCommand: npm run start
+    healthCheckPath: /api/v1/health

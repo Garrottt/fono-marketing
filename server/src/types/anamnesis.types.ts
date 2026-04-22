@@ -1,0 +1,29 @@
+export interface UpdateAnamnesisInput {
+  consultationReason?: string
+  previousAudiologicalDiagnosis?: string
+  lastAuditoryReview?: string
+  hasDiabetesOrImmunosuppression?: boolean
+  hasPreviousEarSurgeries?: boolean
+  timpanoplastia?: boolean
+  mastoidectomia?: boolean
+  miringoplastia?: boolean
+  osiculoplastia?: boolean
+  estapedectomiaEstapedotomia?: boolean
+  usesCambuchos?: boolean
+  usesHearingAid?: boolean
+  hearingAidFeelsLooserOrAnnoying?: boolean
+  hearingAidSoundsLowerOrWhistles?: boolean
+  hearingAidSuppurationOrBadSmell?: boolean
+  hearingAidHoursPerDay?: string
+  cleansWithCottonSwabsOrObjects?: boolean
+  cleaningObjects?: string
+  otalgia?: boolean
+  prurito?: boolean
+  hipoacusia?: boolean
+  otorrea?: boolean
+  otorragia?: boolean
+  plenitudOtica?: boolean
+  tinnitus?: boolean
+  vertigoInestabilidad?: boolean
+  autofonia?: boolean
+}

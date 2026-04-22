@@ -1,0 +1,322 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  PROFESSIONAL
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Professional {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(PROFESSIONAL)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  patients     Patient[]
+  appointments Appointment[]
+  sessions     Session[]
+  tasks        Task[]
+  files        File[]
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  patientId    String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  patient      Patient?            @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  passwordSetupTokens PasswordSetupToken[]
+}
+
+model PasswordSetupToken {
+  id        String   @id @default(uuid())
+  userId    String
+  jti       String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Patient {
+  id             String   @id @default(uuid())
+  professionalId String
+  name           String
+  age            Int?
+  email          String?
+  phone          String?
+  diagnosis      String?
+  generalObjective String @default("")
+  contentHierarchy String[] @default([])
+  hierarchyCriteria String @default("")
+  focus          String @default("")
+  modality       String @default("")
+  strategies     String @default("")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  professional   Professional  @relation(fields: [professionalId], references: [id])
+  appointments   Appointment[]
+  sessions       Session[]
+  goals          Goal[]
+  tasks          Task[]
+  files          File[]
+  user           User?
+  anamnesis      Anamnesis?
+  preLavadoEvaluation PreLavadoEvaluation?
+}
+
+model PreLavadoEvaluation {
+  id                                String   @id @default(uuid())
+  patientId                         String   @unique
+  hasDiabetesOrImmunosuppression    Boolean  @default(false)
+  hasPreviousEarSurgeries           Boolean  @default(false)
+  hasKnownPerforation               Boolean  @default(false)
+  otalgia                           Boolean  @default(false)
+  hipoacusia                        Boolean  @default(false)
+  plenitudOtica                     Boolean  @default(false)
+  otorrea                           Boolean  @default(false)
+  prurito                           Boolean  @default(false)
+  otorragia                         Boolean  @default(false)
+  usesHearingAid                    Boolean  @default(false)
+  hearingAidBadSmell                Boolean  @default(false)
+  dolorAlTocarTrago                 Boolean  @default(false)
+  odPabellonEstado                  String
+  oiPabellonEstado                  String
+  odPabellonObservacion             String
+  oiPabellonObservacion             String
+  odCaeEstado                       String
+  oiCaeEstado                       String
+  odCaeObservacion                  String
+  oiCaeObservacion                  String
+  odMembranaEstado                  String
+  oiMembranaEstado                  String
+  odMembranaObservacion             String
+  oiMembranaObservacion             String
+  odSullivan                        String
+  oiSullivan                        String
+  odObservaciones                   String?
+  oiObservaciones                   String?
+  aptoParaLavado                    Boolean  @default(true)
+  criticalBlocks                    Json
+  precautionAlerts                  Json
+  diagnosticSummary                 String
+  suggestedConduct                  String
+  createdAt                         DateTime @default(now())
+  updatedAt                         DateTime @updatedAt
+
+  patient                           Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model Anamnesis {
+  id                               String   @id @default(uuid())
+  patientId                        String   @unique
+  consultationReason               String?
+  previousAudiologicalDiagnosis    String?
+  lastAuditoryReview               String?
+  hasDiabetesOrImmunosuppression   Boolean  @default(false)
+  hasPreviousEarSurgeries          Boolean  @default(false)
+  timpanoplastia                   Boolean  @default(false)
+  mastoidectomia                   Boolean  @default(false)
+  miringoplastia                   Boolean  @default(false)
+  osiculoplastia                   Boolean  @default(false)
+  estapedectomiaEstapedotomia      Boolean  @default(false)
+  usesCambuchos                    Boolean  @default(false)
+  usesHearingAid                   Boolean  @default(false)
+  hearingAidFeelsLooserOrAnnoying  Boolean  @default(false)
+  hearingAidSoundsLowerOrWhistles  Boolean  @default(false)
+  hearingAidSuppurationOrBadSmell  Boolean  @default(false)
+  hearingAidHoursPerDay            String?
+  cleansWithCottonSwabsOrObjects   Boolean  @default(false)
+  cleaningObjects                  String?
+  otalgia                          Boolean  @default(false)
+  prurito                          Boolean  @default(false)
+  hipoacusia                       Boolean  @default(false)
+  otorrea                          Boolean  @default(false)
+  otorragia                        Boolean  @default(false)
+  plenitudOtica                    Boolean  @default(false)
+  tinnitus                         Boolean  @default(false)
+  vertigoInestabilidad             Boolean  @default(false)
+  autofonia                        Boolean  @default(false)
+  createdAt                        DateTime @default(now())
+  updatedAt                        DateTime @updatedAt
+
+  patient                          Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id                  String                @id @default(uuid())
+  patientId           String
+  professionalId      String
+  datetime            DateTime
+  status              AppointmentStatus     @default(SCHEDULED)
+  notes               String?
+  reminderSent        Boolean               @default(false)
+  reminderScheduledAt DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  patient             Patient               @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  professional        Professional          @relation(fields: [professionalId], references: [id])
+  reminders           AppointmentReminder[]
+}
+
+model AppointmentReminder {
+  id            String      @id @default(uuid())
+  appointmentId String
+  scheduledAt   DateTime
+  sentAt        DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id             String   @id @default(uuid())
+  patientId      String
+  professionalId String
+  sessionNumber  Int      @default(1)
+  date           DateTime
+  whatWasDone    String
+  contentHierarchy String[] @default([])
+  hierarchyCriteria String @default("")
+  focus          String   @default("")
+  modality       String   @default("")
+  strategies     String   @default("")
+  generalObjective String @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  patient        Patient                   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  professional   Professional              @relation(fields: [professionalId], references: [id])
+  specificObjectives SessionSpecificObjective[]
+  sessionTasks   SessionTask[]
+
+  @@unique([patientId, sessionNumber])
+}
+
+model SessionSpecificObjective {
+  id          String   @id @default(uuid())
+  sessionId    String
+  description String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  operationalObjectives SessionOperationalObjective[]
+}
+
+model SessionOperationalObjective {
+  id                 String   @id @default(uuid())
+  specificObjectiveId String
+  description        String
+  activities         String[] @default([])
+  order              Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  specificObjective  SessionSpecificObjective @relation(fields: [specificObjectiveId], references: [id], onDelete: Cascade)
+}
+
+model SessionTask {
+  id          String   @id @default(uuid())
+  sessionId   String
+  title       String
+  description String?
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  files       File[]
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  patientId   String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  patient           Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  operationalGoals  OperationalGoal[]
+}
+
+model OperationalGoal {
+  id          String   @id @default(uuid())
+  goalId      String
+  description String
+  completed   Boolean  @default(false)
+  status      String   @default("no_cumplido")
+  notes       String?
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  goal        Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id             String   @id @default(uuid())
+  patientId      String
+  professionalId String
+  title          String
+  description    String?
+  assignedAt     DateTime @default(now())
+  seen           Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+
+  patient        Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  professional   Professional @relation(fields: [professionalId], references: [id])
+  files          File[]
+}
+
+model File {
+  id             String   @id @default(uuid())
+  patientId      String
+  professionalId String
+  taskId         String?
+  sessionTaskId  String?
+  filename       String
+  url            String
+  filetype       String
+  uploadedAt     DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  patient        Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  professional   Professional @relation(fields: [professionalId], references: [id])
+  task           Task?        @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  sessionTask    SessionTask? @relation(fields: [sessionTaskId], references: [id], onDelete: SetNull)
+}
+
+enum UserRole {
+  PROFESSIONAL
+  PATIENT
+}
