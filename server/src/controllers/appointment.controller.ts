@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import * as appointmentService from "../services/appointment.service"
 import { CreateAppointmentInput, UpdateAppointmentInput } from "../types/appointment.types"
 import { sendAppointmentCreatedEmail, sendAppointmentRescheduledEmail } from "../utils/mailer"
+import { processDueReminders } from "../utils/reminderCron"
 import { chileLocalDateTimeToUtc } from "../utils/timezone"
 
 export const getAppointments = async (req: Request, res: Response): Promise<void> => {
@@ -119,5 +120,15 @@ export const deleteAppointment = async (req: Request, res: Response): Promise<vo
     res.status(200).json({ message: "Cita eliminada correctamente" })
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar la cita" })
+  }
+}
+
+export const runReminderDispatch = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await processDueReminders()
+    res.status(200).json({ ok: true, ...result })
+  } catch (error) {
+    console.error("Error ejecutando recordatorios:", error)
+    res.status(500).json({ ok: false, message: "Error al ejecutar recordatorios" })
   }
 }

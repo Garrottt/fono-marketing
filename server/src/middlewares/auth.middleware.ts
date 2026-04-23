@@ -56,3 +56,21 @@ export const authorizePatientOrAdmin = (req: Request, res: Response, next: NextF
 
   next()
 }
+
+export const authorizeCron = (req: Request, res: Response, next: NextFunction): void => {
+  const cronSecret = process.env.CRON_SECRET
+
+  if (!cronSecret) {
+    res.status(500).json({ message: "CRON_SECRET no configurado" })
+    return
+  }
+
+  const authHeader = req.headers.authorization
+
+  if (authHeader !== `Bearer ${cronSecret}`) {
+    res.status(401).json({ message: "No autorizado" })
+    return
+  }
+
+  next()
+}
