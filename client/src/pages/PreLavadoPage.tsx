@@ -51,7 +51,7 @@ function PreLavadoPage() {
 
   return (
     <ClinicalModuleLayout
-      title="Pre-Lavado"
+      title="Prelavado"
       description="Selecciona un paciente para evaluar aptitud, bloqueos y observaciones otoscópicas antes del procedimiento."
       patients={patients}
       loading={loading}

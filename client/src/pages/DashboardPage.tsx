@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/authContext"
 import AppBrand from "../components/AppBrand"
+import { demoBrand } from "../config/demoBrand"
 
 function MenuIcon({ children }: { children: ReactNode }) {
   return <span className="flex h-5 w-5 shrink-0 items-center justify-center">{children}</span>
@@ -71,7 +72,7 @@ const NAV_ITEMS = [
   { to: "/dashboard", label: "Inicio", icon: <HomeIcon />, hint: "Resumen de agenda y actividad" },
   { to: "/patients", label: "Pacientes", icon: <PatientsIcon />, hint: "Ficha base y acceso rápido" },
   { to: "/anamnesis", label: "Anamnesis", icon: <ClipboardIcon />, hint: "Antecedentes y alertas" },
-  { to: "/pre-lavado", label: "Pre-Lavado", icon: <CheckNoteIcon />, hint: "Evaluación y aptitud" },
+  { to: "/pre-lavado", label: "Prelavado", icon: <CheckNoteIcon />, hint: "Evaluación y aptitud" },
   { to: "/appointments", label: "Citas", icon: <CalendarIcon />, hint: "Calendario y recordatorios" }
 ]
 
@@ -121,14 +122,14 @@ function DashboardPage() {
           <div className="rounded-[1.6rem] border border-white/60 bg-white/85 p-4 shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
             <AppBrand />
             <p className="mt-4 text-sm leading-6 text-slate-500">
-              Flujo clínico claro para seguimiento, anamnesis, pre-lavado y coordinación de citas.
+              {demoBrand.dashboard.sidebarDescription}
             </p>
           </div>
 
           <div className="mt-4 rounded-[1.4rem] border border-white/60 bg-white/72 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Sesión activa</p>
-            <p className="mt-3 text-lg font-semibold text-slate-950">{user?.name || "Profesional"}</p>
-              <p className="mt-1 text-sm text-slate-500">Profesional de atención</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{demoBrand.dashboard.sessionLabel}</p>
+            <p className="mt-3 text-lg font-semibold text-slate-950">{user?.name || demoBrand.demoProfessionalName}</p>
+            <p className="mt-1 text-sm text-slate-500">{demoBrand.dashboard.sessionSubtitle}</p>
           </div>
 
           <nav className="mt-5 flex flex-1 flex-col gap-2">
@@ -158,7 +159,7 @@ function DashboardPage() {
                 Cerrar
               </button>
             </div>
-            <p className="mt-3 text-sm text-slate-500">Acceso rápido a módulos clínicos y administrativos.</p>
+            <p className="mt-3 text-sm text-slate-500">{demoBrand.dashboard.mobileDescription}</p>
           </div>
 
           <nav className="mt-5 flex flex-1 flex-col gap-2">
@@ -202,7 +203,7 @@ function DashboardPage() {
                     </svg>
                   </button>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Módulo activo</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{demoBrand.dashboard.currentModuleLabel}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-3">
                       <h1 className="fono-title text-[1.7rem] font-semibold text-slate-950 sm:text-[1.9rem]">
                         {currentSection.label}
@@ -226,8 +227,8 @@ function DashboardPage() {
                     </p>
                   </div>
                   <div className="rounded-2xl border border-white/70 bg-gradient-to-r from-slate-950 to-teal-800 px-4 py-3 text-white shadow-[0_18px_34px_rgba(15,23,42,0.16)]">
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/60">Usuario</p>
-                    <p className="mt-1 text-sm font-semibold">{user?.name || "Profesional"}</p>
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/60">{demoBrand.dashboard.userLabel}</p>
+                    <p className="mt-1 text-sm font-semibold">{user?.name || demoBrand.demoProfessionalName}</p>
                   </div>
                   <button
                     onClick={handleLogout}

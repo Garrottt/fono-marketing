@@ -97,10 +97,10 @@ function PatientsPage() {
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Módulo pacientes</p>
             <h2 className="fono-title mt-3 text-3xl font-semibold text-slate-950 sm:text-4xl">
-              Fichas claras, acceso rápido y menos fricción para el equipo.
+              Fichas claras, acceso rápido y menos fricción antes de cada sesión.
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-500 sm:text-base">
-              Organicé esta vista con foco en búsqueda, creación rápida y acceso directo al historial clínico para que el módulo sea útil desde móvil antes que desde escritorio.
+              Esta vista concentra búsqueda, creación rápida y acceso directo al historial clínico para que la profesional encuentre el contexto del paciente en segundos.
             </p>
           </div>
 
@@ -133,7 +133,7 @@ function PatientsPage() {
         <div className="rounded-[1.7rem] border border-white/70 bg-white/78 p-5 shadow-[0_18px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Avance clínico</p>
           <p className="mt-3 text-3xl font-semibold text-slate-950">{patientsWithClinicalProgress}</p>
-          <p className="mt-2 text-sm text-slate-500">con anamnesis o pre-lavado</p>
+          <p className="mt-2 text-sm text-slate-500">con anamnesis o prelavado</p>
         </div>
       </section>
 
@@ -274,7 +274,7 @@ function PatientsPage() {
                       )}
                       {patient.preLavadoEvaluation && (
                         <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
-                          Pre-lavado
+                          Prelavado
                         </span>
                       )}
                     </div>

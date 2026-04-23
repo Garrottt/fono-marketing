@@ -94,22 +94,7 @@ const createEmptySessionForm = (): SessionFormState => ({
   sessionTasks: []
 })
 
-const hasRequiredPlanningData = ({
-  generalObjective,
-  contentHierarchy,
-  hierarchyCriteria,
-  focus,
-  modality
-}: Pick<
-  SessionsSectionProps,
-  "generalObjective" | "contentHierarchy" | "hierarchyCriteria" | "focus" | "modality" | "strategies"
->) => (
-  Boolean(generalObjective.trim()) &&
-  contentHierarchy.some((item) => item.trim()) &&
-  Boolean(hierarchyCriteria.trim()) &&
-  Boolean(focus.trim()) &&
-  Boolean(modality.trim())
-)
+const hasRequiredPlanningData = (_planning?: unknown) => true
 
 const mapSessionToForm = (session: Session): SessionFormState => ({
   date: session.date.split("T")[0],
@@ -475,7 +460,7 @@ function SessionsSection({
       resetCreateForm()
       setSessionMessage("Sesión guardada correctamente.")
     } catch (error) {
-      onError(getRequestErrorMessage(error, "Error al guardar la sesión. Revisa que la ficha clínica esté completa."))
+      onError(getRequestErrorMessage(error, "Error al guardar la sesión."))
     } finally {
       setSaving(false)
     }
@@ -1152,13 +1137,7 @@ const renderSessionForm = (
             { ...createForm, generalObjective: generalObjective.trim() },
             updateCreateForm,
             "Guardar sesión",
-            saving ||
-              !generalObjective.trim() ||
-              !contentHierarchy.some((item) => item.trim()) ||
-              !hierarchyCriteria.trim() ||
-              !focus.trim() ||
-              !modality.trim() ||
-              !strategies.trim(),
+            saving,
             "submit",
             "create"
           )}
@@ -1246,13 +1225,7 @@ const renderSessionForm = (
                           editForm,
                           updateEditForm,
                           "Guardar cambios",
-                          saving ||
-                            !generalObjective.trim() ||
-                            !contentHierarchy.some((item) => item.trim()) ||
-                            !hierarchyCriteria.trim() ||
-                            !focus.trim() ||
-                            !modality.trim() ||
-                            !strategies.trim(),
+                          saving,
                           "button",
                           `edit-${session.id}`,
                           () => handleUpdateSession(session.id)

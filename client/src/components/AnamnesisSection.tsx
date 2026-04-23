@@ -435,13 +435,13 @@ function AnamnesisSection({ patientId, patientName, patientAge, patientDiagnosis
               rows={4}
             />
             <TextCard
-              label="Diagnóstico audiologico previo"
+              label="Diagnóstico audiológico previo"
               value={form.previousAudiologicalDiagnosis || ""}
               onChange={(value) => updateField("previousAudiologicalDiagnosis", value)}
               rows={3}
             />
             <TextCard
-              label="Última revision auditiva ORL o FONO"
+              label="Última revisión auditiva ORL o fono"
               value={form.lastAuditoryReview || ""}
               onChange={(value) => updateField("lastAuditoryReview", value)}
               rows={3}
@@ -483,9 +483,10 @@ function AnamnesisSection({ patientId, patientName, patientAge, patientDiagnosis
             )}
 
             <BinaryField
-              label="Le realizaban cambuchos o se realiza cambucho?"
+              label="¿Presenta antecedente de cambucho o tapón de cerumen?"
               value={form.usesCambuchos}
               onChange={(value) => updateField("usesCambuchos", value)}
+              help="Se conserva el término usado en consulta, pero se vincula al lenguaje clínico de tapón de cerumen."
             />
 
             <BinaryField

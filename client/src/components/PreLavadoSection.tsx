@@ -471,10 +471,10 @@ function PreLavadoSection({ patientId, patientName, patientAge, patientDiagnosis
           <div className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Pre-Lavado</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">Prelavado</p>
                 <h3 className="mt-2 text-2xl font-semibold text-slate-900">{patientName}</h3>
                 <p className="mt-1 text-sm text-slate-500">
-                  Evaluación otoscópica pre-lavado para soporte clínico durante la consulta.
+                  Evaluación otoscópica de prelavado para soporte clínico durante la consulta.
                 </p>
               </div>
 
@@ -559,12 +559,12 @@ function PreLavadoSection({ patientId, patientName, patientAge, patientDiagnosis
         <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div>
             <h4 className="text-lg font-semibold text-slate-900">Contexto heredado desde anamnesis</h4>
-            <p className="mt-1 text-sm text-slate-500">Estos antecedentes ya vienen desde la anamnesis y se consideran dentro de la evaluación pre-lavado.</p>
+            <p className="mt-1 text-sm text-slate-500">Estos antecedentes ya vienen desde la anamnesis y se consideran dentro de la evaluación de prelavado.</p>
           </div>
 
           {!anamnesis && (
             <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-              Este paciente aún no tiene anamnesis registrada. El pre-lavado seguirá funcionando, pero sin antecedentes clínicos heredados.
+              Este paciente aún no tiene anamnesis registrada. El prelavado seguirá funcionando, pero sin antecedentes clínicos heredados.
             </div>
           )}
 
@@ -584,7 +584,7 @@ function PreLavadoSection({ patientId, patientName, patientAge, patientDiagnosis
 
         <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div>
-            <h4 className="text-lg font-semibold text-slate-900">Variables propias del pre-lavado</h4>
+            <h4 className="text-lg font-semibold text-slate-900">Variables propias del prelavado</h4>
             <p className="mt-1 text-sm text-slate-500">Aquí solo se registran hallazgos exclusivos de esta evaluación.</p>
           </div>
 
@@ -605,7 +605,7 @@ function PreLavadoSection({ patientId, patientName, patientAge, patientDiagnosis
 
       <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div>
-          <h4 className="text-lg font-semibold text-slate-900">IV. Evaluación otoscópica pre-lavado</h4>
+          <h4 className="text-lg font-semibold text-slate-900">IV. Evaluación otoscópica de prelavado</h4>
           <p className="mt-1 text-sm text-slate-500">Comparacion estructurada entre oído derecho y oído izquierdo.</p>
         </div>
 

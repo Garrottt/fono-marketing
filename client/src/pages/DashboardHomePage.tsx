@@ -4,6 +4,7 @@ import {
   getAppointmentsService,
   updateAppointmentService
 } from "../services/appointment.service"
+import { demoBrand } from "../config/demoBrand"
 import { getPatientsService } from "../services/patient.service"
 import type { Appointment } from "../types/appointment.types"
 import type { Patient } from "../types/patient.types"
@@ -222,12 +223,12 @@ function DashboardHomePage() {
                 </p>
               </div>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">Panel de inicio</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">{demoBrand.dashboard.heroEyebrow}</p>
             <h2 className="fono-title mt-3 max-w-3xl text-3xl font-semibold leading-tight sm:text-4xl">
-              Un vistazo clínico rápido para decidir qué atender primero.
+              {demoBrand.dashboard.heroTitle}
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72 sm:text-base">
-              Diseñé esta pantalla para que desde el móvil ya puedas ver agenda, pacientes activos y próximos pasos sin entrar a varias vistas.
+              {demoBrand.dashboard.heroDescription}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-medium text-white/75">
@@ -278,9 +279,9 @@ function DashboardHomePage() {
             <section className="grid gap-4 sm:grid-cols-3">
               <div className="flex h-full flex-col rounded-[1.7rem] border border-white/70 bg-white/78 p-5 shadow-[0_18px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Acceso rápido</p>
-                <p className="mt-1 text-lg font-semibold text-slate-950">Agendar desde Inicio</p>
+                <p className="mt-1 text-lg font-semibold text-slate-950">{demoBrand.dashboard.accessQuickTitle}</p>
                 <p className="mt-1 text-sm text-slate-500">
-                  Salta directo al formulario de cita usando la fecha que ya tienes seleccionada.
+                  {demoBrand.dashboard.accessQuickDescription}
                 </p>
                 <button
                   type="button"
@@ -292,9 +293,9 @@ function DashboardHomePage() {
               </div>
               <div className="flex h-full flex-col rounded-[1.7rem] border border-white/70 bg-white/78 p-5 shadow-[0_18px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Próxima acción</p>
-                <p className="mt-1 text-lg font-semibold text-slate-950">Ver pacientes</p>
+                <p className="mt-1 text-lg font-semibold text-slate-950">{demoBrand.dashboard.nextActionTitle}</p>
                 <p className="mt-1 text-sm text-slate-500">
-                  Entra rápido al listado para revisar fichas, objetivos y acceso al portal.
+                  {demoBrand.dashboard.nextActionDescription}
                 </p>
                 <button
                   type="button"
@@ -305,9 +306,9 @@ function DashboardHomePage() {
                 </button>
               </div>
               <div className="flex h-full flex-col rounded-[1.7rem] border border-white/70 bg-white/78 p-5 shadow-[0_18px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Vista seleccionada</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{demoBrand.dashboard.selectedViewTitle}</p>
                 <p className="mt-1 text-lg font-semibold capitalize text-slate-950">{selectedDateLabel}</p>
-                <p className="mt-2 text-sm text-slate-500">{selectedAppointments.length} citas en este día</p>
+                <p className="mt-2 text-sm text-slate-500">{demoBrand.dashboard.selectedViewDescription}</p>
                 <button
                   type="button"
                   onClick={() => {
@@ -324,10 +325,10 @@ function DashboardHomePage() {
             <section id="calendar-panel" className="rounded-[1.8rem] border border-white/70 bg-white/78 p-4 shadow-[0_18px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-5 lg:p-6">
               <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Calendario inteligente</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{demoBrand.dashboard.calendarTitle}</p>
                   <h3 className="fono-title mt-2 text-2xl font-semibold capitalize text-slate-950">{monthLabel}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-500">
-                    Arrastra una cita a otro día para reagendar rápidamente sin salir de Inicio.
+                    {demoBrand.dashboard.calendarDescription}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
