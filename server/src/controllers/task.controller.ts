@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
 import fs from "fs"
-import path from "path"
 import * as fileService from "../services/file.service"
 import * as taskService from "../services/task.service"
 import * as patientService from "../services/patient.service"
 import { CreateTaskInput } from "../types/task.types"
+import { buildUploadUrl, getUploadPathFromUrl } from "../utils/uploads"
 
 
 
@@ -52,7 +52,7 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
         patientId,
         professionalId,
         req.file.originalname,
-        `/uploads/${req.file.filename}`,
+        buildUploadUrl(req.file.filename),
         req.file.mimetype,
         task.id
       )
@@ -91,7 +91,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
     if (req.file) {
       if (existing.files && existing.files.length > 0) {
         const oldFile = existing.files[0]
-        const filePath = path.join(process.cwd(), oldFile.url)
+        const filePath = getUploadPathFromUrl(oldFile.url)
         if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
         await fileService.deleteFile(oldFile.id)
       }
@@ -100,7 +100,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
         existing.patientId,
         professionalId,
         req.file.originalname,
-        `/uploads/${req.file.filename}`,
+        buildUploadUrl(req.file.filename),
         req.file.mimetype,
         id
       )

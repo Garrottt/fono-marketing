@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import * as fileService from "../services/file.service"
 import * as patientService from "../services/patient.service"
 import fs from "fs"
-import path from "path"
+import { buildUploadUrl, getUploadPathFromUrl } from "../utils/uploads"
 
 export const getFilesByPatient = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -42,7 +42,7 @@ export const uploadFile = async (req: Request, res: Response): Promise<void> => 
       patientId,
       professionalId,
       req.file.originalname,
-      `/uploads/${req.file.filename}`,
+      buildUploadUrl(req.file.filename),
       req.file.mimetype
     )
 
@@ -65,7 +65,7 @@ export const deleteFile = async (req: Request, res: Response): Promise<void> => 
     }
 
     // Eliminar el archivo físico del servidor
-    const filePath = path.join(process.cwd(), existing.url)
+    const filePath = getUploadPathFromUrl(existing.url)
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath)
     }

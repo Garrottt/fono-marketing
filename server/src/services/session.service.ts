@@ -7,6 +7,16 @@ import {
 } from "../types/session.types"
 
 type SessionTransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
+type ExistingOperationalObjective = {
+  id: string
+}
+type ExistingSpecificObjective = {
+  id: string
+  operationalObjectives: ExistingOperationalObjective[]
+}
+type ExistingSessionTask = {
+  id: string
+}
 
 const sessionInclude = {
   specificObjectives: {
@@ -61,15 +71,15 @@ const syncSpecificObjectives = async (
   const existingSpecificObjectives = await tx.sessionSpecificObjective.findMany({
     where: { sessionId },
     include: { operationalObjectives: true }
-  })
+  }) as ExistingSpecificObjective[]
 
   const payloadSpecificIds = specificObjectives
-    .map((specificObjective) => specificObjective.id)
+    .map((specificObjective: SessionSpecificObjectiveInput) => specificObjective.id)
     .filter(Boolean) as string[]
 
   const deletableSpecificIds = existingSpecificObjectives
-    .filter((specificObjective) => !payloadSpecificIds.includes(specificObjective.id))
-    .map((specificObjective) => specificObjective.id)
+    .filter((specificObjective: ExistingSpecificObjective) => !payloadSpecificIds.includes(specificObjective.id))
+    .map((specificObjective: ExistingSpecificObjective) => specificObjective.id)
 
   if (deletableSpecificIds.length > 0) {
     await tx.sessionSpecificObjective.deleteMany({
@@ -100,7 +110,7 @@ const syncSpecificObjectives = async (
     }
 
     const existingOperationalObjectives = existingSpecificObjectives.find(
-      (item) => item.id === currentSpecificObjectiveId
+      (item: ExistingSpecificObjective) => item.id === currentSpecificObjectiveId
     )?.operationalObjectives ?? []
 
     const payloadOperationalIds = specificObjective.operationalObjectives
@@ -108,8 +118,8 @@ const syncSpecificObjectives = async (
       .filter(Boolean) as string[]
 
     const deletableOperationalIds = existingOperationalObjectives
-      .filter((operationalObjective) => !payloadOperationalIds.includes(operationalObjective.id))
-      .map((operationalObjective) => operationalObjective.id)
+      .filter((operationalObjective: ExistingOperationalObjective) => !payloadOperationalIds.includes(operationalObjective.id))
+      .map((operationalObjective: ExistingOperationalObjective) => operationalObjective.id)
 
     if (deletableOperationalIds.length > 0) {
       await tx.sessionOperationalObjective.deleteMany({
@@ -118,7 +128,7 @@ const syncSpecificObjectives = async (
     }
 
     for (const operationalObjective of specificObjective.operationalObjectives) {
-      if (operationalObjective.id && existingOperationalObjectives.some((item) => item.id === operationalObjective.id)) {
+      if (operationalObjective.id && existingOperationalObjectives.some((item: ExistingOperationalObjective) => item.id === operationalObjective.id)) {
       await tx.sessionOperationalObjective.update({
         where: { id: operationalObjective.id },
         data: {
@@ -148,15 +158,15 @@ const syncSessionTasks = async (
 ) => {
   const existingTasks = await tx.sessionTask.findMany({
     where: { sessionId }
-  })
+  }) as ExistingSessionTask[]
 
   const payloadTaskIds = sessionTasks
-    .map((sessionTask) => sessionTask.id)
+    .map((sessionTask: SessionTaskInput) => sessionTask.id)
     .filter(Boolean) as string[]
 
   const deletableTaskIds = existingTasks
-    .filter((sessionTask) => !payloadTaskIds.includes(sessionTask.id))
-    .map((sessionTask) => sessionTask.id)
+    .filter((sessionTask: ExistingSessionTask) => !payloadTaskIds.includes(sessionTask.id))
+    .map((sessionTask: ExistingSessionTask) => sessionTask.id)
 
   if (deletableTaskIds.length > 0) {
     await tx.sessionTask.deleteMany({
@@ -165,7 +175,7 @@ const syncSessionTasks = async (
   }
 
   for (const sessionTask of sessionTasks) {
-    if (sessionTask.id && existingTasks.some((item) => item.id === sessionTask.id)) {
+    if (sessionTask.id && existingTasks.some((item: ExistingSessionTask) => item.id === sessionTask.id)) {
       await tx.sessionTask.update({
         where: { id: sessionTask.id },
         data: {
@@ -237,7 +247,7 @@ export const createSession = async (
   patientId: string,
   professionalId: string
 ) => {
-  const sessionId = await prisma.$transaction(async (tx) => {
+  const sessionId = await prisma.$transaction(async (tx: SessionTransactionClient) => {
     const lastSession = await tx.session.findFirst({
       where: { patientId },
       orderBy: { sessionNumber: "desc" },
@@ -277,7 +287,7 @@ export const updateSession = async (id: string, data: UpdateSessionInput) => {
 
   if (!existingSession) return null
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: SessionTransactionClient) => {
     await tx.session.update({
       where: { id },
       data: {
@@ -314,7 +324,7 @@ export const deleteSession = async (id: string) => {
 
   if (!existingSession) return null
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: SessionTransactionClient) => {
     await tx.session.delete({
       where: { id }
     })

@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
 import fs from "fs"
-import path from "path"
 import * as sessionService from "../services/session.service"
 import * as patientService from "../services/patient.service"
 import * as fileService from "../services/file.service"
 import { CreateSessionInput, SessionSpecificObjectiveInput, SessionTaskInput, UpdateSessionInput } from "../types/session.types"
+import { buildUploadUrl, getUploadPathFromUrl } from "../utils/uploads"
 
 const hasValidSpecificObjectives = (specificObjectives: SessionSpecificObjectiveInput[] | undefined) =>
   (specificObjectives ?? []).every((specificObjective) =>
@@ -295,7 +295,7 @@ export const uploadSessionTaskFile = async (req: Request, res: Response): Promis
       session.patientId,
       professionalId,
       req.file.originalname,
-      `/uploads/${req.file.filename}`,
+      buildUploadUrl(req.file.filename),
       req.file.mimetype,
       undefined,
       sessionTaskId
@@ -329,7 +329,7 @@ export const deleteSessionTaskFile = async (req: Request, res: Response): Promis
       return
     }
 
-    const filePath = path.join(process.cwd(), existingFile.url)
+    const filePath = getUploadPathFromUrl(existingFile.url)
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath)
     }

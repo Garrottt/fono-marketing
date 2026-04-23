@@ -1,12 +1,7 @@
 import multer from "multer"
-import path from "path"
-import fs from "fs"
+import { ensureUploadDir, uploadDir } from "../utils/uploads"
 
-// Crear la carpeta uploads si no existe
-const uploadDir = "uploads"
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir)
-}
+ensureUploadDir()
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {

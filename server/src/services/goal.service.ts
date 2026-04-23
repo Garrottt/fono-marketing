@@ -1,6 +1,8 @@
 import prisma from "../lib/prisma"
 import { CreateGoalInput, CreateOperationalGoalInput, UpdateOperationalGoalInput } from "../types/goal.types"
 
+type GoalOperationalGoal = Awaited<ReturnType<typeof prisma.operationalGoal.findMany>>[number]
+
 export const getGoalsByPatient = async (patientId: string) => {
   return prisma.goal.findMany({
     where: { patientId },
@@ -59,7 +61,7 @@ export const updateOperationalGoal = async (
     where: { goalId: updated.goalId }
   })
 
-  const allCompleted = allOps.length > 0 && allOps.every(op => op.completed)
+  const allCompleted = allOps.length > 0 && allOps.every((op: GoalOperationalGoal) => op.completed)
 
   await prisma.goal.update({
     where: { id: updated.goalId },
@@ -79,7 +81,7 @@ export const deleteOperationalGoal = async (id: string) => {
     where: { goalId: op.goalId }
   })
 
-  const allCompleted = remaining.length > 0 && remaining.every(o => o.completed)
+  const allCompleted = remaining.length > 0 && remaining.every((o: GoalOperationalGoal) => o.completed)
 
   await prisma.goal.update({
     where: { id: op.goalId },
