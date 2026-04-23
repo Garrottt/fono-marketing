@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "prisma generate && tsc",
-    "vercel-build": "npm run build && npm run prisma:migrate:deploy && npm run admin:upsert",
+    "vercel-build": "npm run build && npm run admin:upsert",
+    "deploy:db": "npm run prisma:migrate:deploy && npm run admin:upsert",
     "start": "node dist/index.js",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
