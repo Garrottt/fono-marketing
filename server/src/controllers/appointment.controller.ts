@@ -50,13 +50,15 @@ export const createAppointment = async (req: Request, res: Response): Promise<vo
     const appointment = await appointmentService.createAppointment(data, professionalId)
 
     if (appointment.patient.email) {
-      void sendAppointmentCreatedEmail(
+      try {
+        await sendAppointmentCreatedEmail(
           appointment.patient.email,
           appointment.patient.name,
           appointment.datetime
-        ).catch((err) => {
-          console.error("Error enviando correo de confirmacion:", err)
-        })
+        )
+      } catch (err) {
+        console.error("Error enviando correo de confirmacion:", err)
+      }
     }
 
     res.status(201).json({ appointment })
@@ -85,13 +87,15 @@ export const updateAppointment = async (req: Request, res: Response): Promise<vo
     const appointment = await appointmentService.updateAppointment(id, data)
 
     if (appointmentDateChanged && existing.patient.email) {
-      void sendAppointmentRescheduledEmail(
+      try {
+        await sendAppointmentRescheduledEmail(
           existing.patient.email,
           existing.patient.name,
           appointment.datetime
-        ).catch((err) => {
-          console.error("Error enviando correo de reagendamiento:", err)
-        })
+        )
+      } catch (err) {
+        console.error("Error enviando correo de reagendamiento:", err)
+      }
     }
 
     res.status(200).json({ appointment })

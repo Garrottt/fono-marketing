@@ -30,6 +30,35 @@ const transportConfig = {
 
 const transporter = nodemailer.createTransport(transportConfig)
 
+const hasSmtpConfig = Boolean(emailFrom && emailUser && emailPass)
+
+const sendMailViaSmtp = async (options: nodemailer.SendMailOptions) => {
+  if (!emailFrom || !emailUser || !emailPass) {
+    throw new Error("EMAIL_CONFIG_MISSING")
+  }
+
+  console.log("Intentando enviar correo con transporte SMTP:", {
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpSecure,
+    requireTLS: smtpRequireTls
+  })
+
+  const info = await transporter.sendMail({
+    ...options,
+    from: emailFrom
+  })
+
+  console.log("Correo enviado:", {
+    to: options.to,
+    subject: options.subject,
+    messageId: info.messageId,
+    provider: "smtp"
+  })
+
+  return info
+}
+
 const sendMailWithLogging = async (options: nodemailer.SendMailOptions) => {
   if (!emailFrom) {
     throw new Error("EMAIL_CONFIG_MISSING")
@@ -50,61 +79,52 @@ const sendMailWithLogging = async (options: nodemailer.SendMailOptions) => {
         return { email: recipient.address, name: recipient.name }
       })
 
-    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": brevoApiKey
-      },
-      body: JSON.stringify({
-        sender: {
-          email: emailFrom,
-          name: emailFromName
+    try {
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": brevoApiKey
         },
-        to: recipients,
-        subject: options.subject,
-        htmlContent: options.html
+        body: JSON.stringify({
+          sender: {
+            email: emailFrom,
+            name: emailFromName
+          },
+          to: recipients,
+          subject: options.subject,
+          htmlContent: options.html
+        }),
+        signal: AbortSignal.timeout(15000)
       })
-    })
 
-    if (!response.ok) {
-      const errorBody = await response.text()
-      throw new Error(`BREVO_API_ERROR ${response.status}: ${errorBody}`)
+      if (!response.ok) {
+        const errorBody = await response.text()
+        throw new Error(`BREVO_API_ERROR ${response.status}: ${errorBody}`)
+      }
+
+      const data = await response.json() as { messageId?: string }
+      console.log("Correo enviado:", {
+        to: options.to,
+        subject: options.subject,
+        messageId: data.messageId,
+        provider: "brevo-api"
+      })
+
+      return data
+    } catch (error) {
+      console.error("Fallo el envio con API de Brevo", error)
+
+      if (!hasSmtpConfig) {
+        throw error
+      }
+
+      console.log("Reintentando envio por SMTP")
+      return sendMailViaSmtp(options)
     }
-
-    const data = await response.json() as { messageId?: string }
-    console.log("Correo enviado:", {
-      to: options.to,
-      subject: options.subject,
-      messageId: data.messageId
-    })
-
-    return data
   }
 
-  if (!emailUser || !emailPass) {
-    throw new Error("EMAIL_CONFIG_MISSING")
-  }
-
-  console.log("Intentando enviar correo con transporte SMTP:", {
-    host: smtpHost,
-    port: smtpPort,
-    secure: smtpSecure,
-    requireTLS: smtpRequireTls
-  })
-
-  const info = await transporter.sendMail({
-    ...options,
-    from: emailFrom
-  })
-
-  console.log("Correo enviado:", {
-    to: options.to,
-    subject: options.subject,
-    messageId: info.messageId
-  })
-
-  return info
+  return sendMailViaSmtp(options)
 }
 
 const getDateParts = (datetime: Date) => {

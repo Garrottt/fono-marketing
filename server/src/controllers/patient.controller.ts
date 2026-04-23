@@ -128,15 +128,17 @@ export const configurePortalAccess = async (req: Request, res: Response): Promis
     const frontendBaseUrl = process.env.FRONTEND_URL || "http://localhost:5173"
     const passwordSetupUrl = `${frontendBaseUrl}/portal/set-password?token=${encodeURIComponent(token)}`
 
-    void sendPatientPortalAccessEmail(
-      user.email,
-      existing.name,
-      password,
-      passwordSetupUrl,
-      expiresAt
-    ).catch((err) => {
+    try {
+      await sendPatientPortalAccessEmail(
+        user.email,
+        existing.name,
+        password,
+        passwordSetupUrl,
+        expiresAt
+      )
+    } catch (err) {
       console.error("Error enviando correo de acceso al portal:", err)
-    })
+    }
 
     res.status(200).json({
       user,
